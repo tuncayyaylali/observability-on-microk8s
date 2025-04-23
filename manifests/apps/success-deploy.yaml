@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: random-success-logger
+  namespace: obs
+  labels:
+    app: success-logger
+spec:
+  containers:
+  - name: logger
+    image: busybox
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        while true; do
+          delay=$(( (RANDOM % 56) + 5 ));
+          if [ $((RANDOM % 2)) -eq 0 ]; then
+            echo "failed: something went wrong at $(date)" >&2;
+          else
+            echo "success: everything is fine at $(date)" >&2;
+          fi
+          sleep $delay;
+        done
+    imagePullPolicy: IfNotPresent
+  restartPolicy: Always
